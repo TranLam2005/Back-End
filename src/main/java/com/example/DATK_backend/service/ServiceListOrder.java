@@ -19,6 +19,8 @@ public class ServiceListOrder {
     }
 
     public void addOrders (ListOrder listOrder) {
-        repositoryListOrders.save(listOrder);
+        System.out.println(listOrder.getMaUser());
+        System.out.println(listOrder.getMaSanPham());
+        repositoryListOrders.insertListOrder(listOrder.getMaUser(), listOrder.getMaSanPham());
     }
 }
