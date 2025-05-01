@@ -27,8 +27,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 668463851394-273grt357cptb83mnno2dsvj7rh22kft.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 372091179984-l3inopvggus0e2hn0h91hq9tes0m6a9u.apps.googleusercontent.com
+            client-secret: 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
             scope: email,profile
             redirect-uri: http://localhost:8080/login/oauth2/code/google
           facebook:

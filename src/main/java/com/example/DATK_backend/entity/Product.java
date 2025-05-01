@@ -1,38 +1,50 @@
 package com.example.DATK_backend.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
 import org.hibernate.annotations.Nationalized;
 
+import java.math.BigDecimal;
+
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class Product {
     @Id
-    @Nationalized
-    @Column(name = "Id", nullable = false, length = 10)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
     @Nationalized
-    @Column(name = "NameProduct", nullable = false, length = 50)
+    @Lob
+    @Column(name = "NameProduct", nullable = false)
     private String nameProduct;
 
     @Lob
     @Column(name = "SourceImage", nullable = false)
     private String sourceImage;
 
+    @Nationalized
     @Lob
-    @Column(name = "ProductIntroduction", nullable = false)
-    private String productIntroduction;
+    @Column(name = "Describtion", nullable = false)
+    private String describtion;
 
-    @Column(name = "Cost")
-    private Integer cost;
+    @Column(name = "Cost", nullable = false)
+    private BigDecimal cost;
 
-    public String getId() {
+    @Nationalized
+    @Column(name = "Category", nullable = false, length = 50)
+    private String category;
+
+    public Product(int id) {
+        this.id = id;
+    }
+    public Product() {}
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -52,20 +64,28 @@ public class Product {
         this.sourceImage = sourceImage;
     }
 
-    public String getProductIntroduction() {
-        return productIntroduction;
+    public String getDescribtion() {
+        return describtion;
     }
 
-    public void setProductIntroduction(String productIntroduction) {
-        this.productIntroduction = productIntroduction;
+    public void setDescribtion(String describtion) {
+        this.describtion = describtion;
     }
 
-    public Integer getCost() {
+    public BigDecimal getCost() {
         return cost;
     }
 
-    public void setCost(Integer cost) {
+    public void setCost(BigDecimal cost) {
         this.cost = cost;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
 }

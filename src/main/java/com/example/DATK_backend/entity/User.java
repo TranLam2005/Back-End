@@ -1,10 +1,12 @@
 package com.example.DATK_backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "Users")
 public class User {
     @Id
@@ -23,13 +25,18 @@ public class User {
 
     @Nationalized
     @Column(name = "Role", nullable = false, length = 10)
-    private String role;
+    private String role = "USER";
 
     @Nationalized
     @ColumnDefault("'tran'")
     @Column(name = "Email", nullable = false, length = 100)
     private String email;
 
+    public User() {
+    }
+    public User(int id) {
+        this.id = id;
+    }
     public Integer getId() {
         return id;
     }

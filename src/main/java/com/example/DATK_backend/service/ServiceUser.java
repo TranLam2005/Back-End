@@ -15,4 +15,13 @@ public class ServiceUser {
     public boolean existsByUserName(String userName) {
         return repositoryUser.existsByUserName(userName);
     }
+    public void addUser(User user) {
+        repositoryUser.save(user);
+    }
+    public boolean existsByEmail(String email) {
+        return repositoryUser.existsByEmail(email);
+    }
+    public void updateUserPassword (String email, String newPassword) {
+        repositoryUser.findUserByEmail(email).setUserPassword(newPassword);
+    }
 }

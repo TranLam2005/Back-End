@@ -28,23 +28,30 @@ public class JwtAuth extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
             ) throws ServletException, IOException
     {
-        final String authHeader = request.getHeader("Authorization");
-        final String token;
-        String userName;
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        token = authHeader.substring(7);
-        userName = jwtUtil.extractUserName(token);
-        if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetail.loadUserByUsername(userName);
-            if (jwtUtil.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        try {
+            final String authHeader = request.getHeader("Authorization");
+            final String token;
+            String userName;
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 filterChain.doFilter(request, response);
+                return;
             }
+            token = authHeader.substring(7);
+            userName = jwtUtil.extractUserName(token);
+            if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetail.loadUserByUsername(userName);
+                if (jwtUtil.validateToken(token, userDetails)) {
+                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                }
+            }
+            filterChain.doFilter(request, response);
+        }
+        catch (Exception e) {
+            System.out.println("Lỗi trong quá trình xác thực: " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
 }
