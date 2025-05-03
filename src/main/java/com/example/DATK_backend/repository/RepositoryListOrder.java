@@ -19,4 +19,9 @@ public interface RepositoryListOrder extends JpaRepository<ListOrder, Integer> {
     List<ListOrder> getListOrders();
 
     void deleteAll();
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from ListOrder l where l.productId = :productId")
+    void deleteListOrdersByProductId (@Param("productId") Integer productId);
 }

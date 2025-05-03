@@ -23,4 +23,8 @@ public class ServiceListOrder {
     public void deleteAll() {
         repositoryListOrder.deleteAll();
     }
+
+    public void deleteListOrdersByMaUser (int productId) {
+        repositoryListOrder.deleteListOrdersByProductId(productId);
+    }
 }

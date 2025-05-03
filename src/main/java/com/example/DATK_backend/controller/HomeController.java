@@ -165,6 +165,13 @@ public class HomeController {
         serviceListOrder.deleteAll();
         return ResponseEntity.ok("hoàn tất");
     }
+
+    @DeleteMapping("/delete-order")
+    public ResponseEntity<?> DeleteOrder(@RequestParam(value = "productId") int productId) {
+        serviceListOrder.deleteListOrdersByMaUser(productId);
+        return ResponseEntity.ok("xóa thành cng");
+    }
+
     @PostMapping("/cart")
     public ResponseEntity<?> Cart(@RequestBody CartRequest cart) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -190,4 +197,5 @@ public class HomeController {
         }
         return ResponseEntity.ok("xóa thành cng");
     }
+
 }
