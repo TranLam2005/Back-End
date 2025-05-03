@@ -11,34 +11,36 @@ public class ListOrder {
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "MaUser", referencedColumnName = "MaUser", nullable = false, insertable = false, updatable = false),
-            @JoinColumn(name = "MaSanPham", referencedColumnName = "MaSanPham", nullable = false, insertable = false, updatable = false)
-    })
-    private Cart cart;
+    @JoinColumn(name = "MaUser", insertable = false, updatable = false)
+    private User maUser;
 
-    @Column(name = "MaUser", nullable = false)
-    private Integer maUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MaSanPham", insertable = false, updatable = false)
+    private Product maSanPham;
 
-    @Column(name = "MaSanPham", nullable = false)
-    private Integer maSanPham;
+    @Column(name = "Quantity")
+    private Integer quantity;
 
-    public ListOrder() {}
+    @Column(name = "MaUser")
+    private Integer userId;
 
-    public Integer getMaUser() {
-        return maUser;
+    @Column(name = "MaSanPham")
+    private Integer productId;
+
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setMaUser(Integer maUser) {
-        this.maUser = maUser;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
-    public Integer getMaSanPham() {
-        return maSanPham;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setMaSanPham(Integer maSanPham) {
-        this.maSanPham = maSanPham;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
     public Integer getId() {
@@ -49,12 +51,28 @@ public class ListOrder {
         this.id = id;
     }
 
-    public Cart getCart() {
-        return cart;
+    public User getMaUser() {
+        return maUser;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
+    public void setMaUser(User maUser) {
+        this.maUser = maUser;
+    }
+
+    public Product getMaSanPham() {
+        return maSanPham;
+    }
+
+    public void setMaSanPham(Product maSanPham) {
+        this.maSanPham = maSanPham;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
 }

@@ -1,26 +1,26 @@
 package com.example.DATK_backend.service;
+
 import com.example.DATK_backend.entity.ListOrder;
-import com.example.DATK_backend.repository.RepositoryListOrders;
-import jakarta.transaction.Transactional;
+import com.example.DATK_backend.repository.RepositoryListOrder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class ServiceListOrder {
-    private final RepositoryListOrders repositoryListOrders;
-    public ServiceListOrder(RepositoryListOrders repositoryListOrders) {
-        this.repositoryListOrders = repositoryListOrders;
+    private final RepositoryListOrder repositoryListOrder;
+    public ServiceListOrder(RepositoryListOrder repositoryListOrder) {
+        this.repositoryListOrder = repositoryListOrder;
+    }
+    public void addListOrder (int maUser, int maSanPham, int quantity) {
+        repositoryListOrder.addListOrders(maUser, maSanPham, quantity);
     }
 
-    public List<ListOrder> getListOrder() {
-        return repositoryListOrders.getListOrder();
+    public List<ListOrder> getListOrders() {
+        return repositoryListOrder.getListOrders();
     }
 
-    public void addOrders (ListOrder listOrder) {
-        System.out.println(listOrder.getMaUser());
-        System.out.println(listOrder.getMaSanPham());
-        repositoryListOrders.insertListOrder(listOrder.getMaUser(), listOrder.getMaSanPham());
+    public void deleteAll() {
+        repositoryListOrder.deleteAll();
     }
 }

@@ -29,7 +29,7 @@ public class HomeController {
     private final ServiceListOrder serviceListOrder;
 
 
-    public HomeController(ServiceProduct serviceProduct, ServiceListOrder serviceListOrder, ServiceCart serviceCart,ServiceOrder serviceOrder,EmailService emailService, Otp otp, ServiceUser serviceUser, JwtUtil jwtUtil, ConfigSecurity configSecurity) {
+    public HomeController(ServiceProduct serviceProduct, ServiceListOrder serviceListOrder,ServiceCart serviceCart,ServiceOrder serviceOrder,EmailService emailService, Otp otp, ServiceUser serviceUser, JwtUtil jwtUtil, ConfigSecurity configSecurity) {
         this.serviceProduct = serviceProduct;
         this.serviceUser = serviceUser;
         this.configSecurity = configSecurity;
@@ -129,7 +129,6 @@ public class HomeController {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             User user = serviceUser.findUserByUserName(userDetails.getUsername());
             if(user != null) {
-                System.out.println("User: " + user.getUserName());
                 return ResponseEntity.ok(serviceCart.getCartByMaUser(user.getId()));
             }
             else {
@@ -140,7 +139,32 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
+    @PostMapping("/list-order")
+    public ResponseEntity<?> ListOrder(@RequestBody List<ListOrder> listOrders) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User user = serviceUser.findUserByUserName(userDetails.getUsername());
+            if (user != null) {
+                for (ListOrder listOrder : listOrders) {
+                    serviceListOrder.addListOrder(user.getId(), listOrder.getProductId(), listOrder.getQuantity());
+                }
+                return ResponseEntity.ok("mua hàng thành công");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+    @PreAuthorize("hasRole('SELLER')")
+    @GetMapping("/list-order")
+    public ResponseEntity<?> ListOrder() {
+        return ResponseEntity.ok(serviceListOrder.getListOrders());
+    }
+    @PreAuthorize("hasRole('SELLER')")
+    @DeleteMapping("/list-order")
+    public ResponseEntity<?> DeleteListOrder() {
+        serviceListOrder.deleteAll();
+        return ResponseEntity.ok("hoàn tất");
+    }
     @PostMapping("/cart")
     public ResponseEntity<?> Cart(@RequestBody CartRequest cart) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -159,34 +183,11 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    @PostMapping("/list-order")
-    public ResponseEntity<?> addListOrder (@RequestBody List<ListOrdersRequest> maSanPhams) {
-        Authentication authentication  = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication);
-        if (authentication != null && authentication.isAuthenticated()) {
-            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-            User user = serviceUser.findUserByUserName(userDetails.getUsername());
-            if (user != null){
-                System.out.println("Hello");
-                for (ListOrdersRequest maSanPham : maSanPhams) {
-                    ListOrder listOrder = new ListOrder();
-                    listOrder.setMaSanPham(maSanPham.getMaSanPham());
-                    listOrder.setMaUser(user.getId());
-                    serviceListOrder.addOrders(listOrder);
-                }
-                return ResponseEntity.ok("Đặt hàng thành công");
-            }
+    @DeleteMapping("/cart")
+    public ResponseEntity<?> deleteCart(@RequestBody List<ListOrder> carts) {
+        for (ListOrder cart : carts) {
+            serviceCart.deleteCartByMaSanPham(cart.getProductId());
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
-    @GetMapping("/list-order")
-    public ResponseEntity<?> getListOrder () {
-        try {
-            System.out.println("Here");
-            return ResponseEntity.ok(serviceListOrder.getListOrder());
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        return ResponseEntity.ok("xóa thành cng");
     }
 }

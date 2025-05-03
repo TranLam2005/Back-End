@@ -27,4 +27,8 @@ public class ServiceCart {
     public List<Cart> getCartByMaUser(Integer userId) {
         return repositoryCart.getCartByMaUser(userId);
     }
+
+    public void deleteCartByMaSanPham (Integer productId) {
+        repositoryCart.deleteCartByMaSanPham(productId);
+    }
 }

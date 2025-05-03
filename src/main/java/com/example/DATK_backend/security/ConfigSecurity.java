@@ -60,7 +60,7 @@ public class ConfigSecurity {
                         .requestMatchers("/login/oauth2/code/google").permitAll()
                         .requestMatchers("/signUp").permitAll()
                         .requestMatchers("/cart").authenticated()
-                        .requestMatchers("/list-order").permitAll()
+                        .requestMatchers("/list-order").authenticated()
                         .requestMatchers("/").authenticated()
                         .anyRequest().authenticated()
                 )

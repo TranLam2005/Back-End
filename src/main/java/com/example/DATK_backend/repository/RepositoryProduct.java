@@ -13,7 +13,6 @@ public interface RepositoryProduct extends JpaRepository<Product, Integer> {
     List<Product> findByNameProduct(@Param("nameProduct") String nameProduct);
     @Query("select p from Product p where p.nameProduct = :nameProduct and p.id = :id")
     Product findProductByNameProductWithId(@Param("nameProduct") String nameProduct, @Param("id") int id);
-    Product findProductByNameProduct(String nameProduct);
     @SuppressWarnings("NullableProblems")
     Page<Product> findAll(@NonNull Pageable pageable);
     List<Product> findProductByCategory(String category);
