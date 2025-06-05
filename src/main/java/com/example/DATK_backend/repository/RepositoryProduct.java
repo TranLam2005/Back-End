@@ -16,4 +16,7 @@ public interface RepositoryProduct extends JpaRepository<Product, Integer> {
     @SuppressWarnings("NullableProblems")
     Page<Product> findAll(@NonNull Pageable pageable);
     List<Product> findProductByCategory(String category);
+
+    @Query("select p from Product p where p.cost between :min and :max and p.category = :category")
+    List<Product> filterProductByCost(@Param("min") int min, @Param("max") int max, @Param("category") String category);
 }

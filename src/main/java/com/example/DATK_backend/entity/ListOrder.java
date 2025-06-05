@@ -27,6 +27,26 @@ public class ListOrder {
     @Column(name = "MaSanPham")
     private Integer productId;
 
+    @Column (name = "Address")
+    private String address;
+
+    @Column(name = "SDT")
+    private String sdt;
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+    public String getSdt() {
+        return this.sdt;
+    }
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
+    }
+
     public Integer getUserId() {
         return userId;
     }

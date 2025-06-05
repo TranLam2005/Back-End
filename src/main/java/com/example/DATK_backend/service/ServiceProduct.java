@@ -27,4 +27,7 @@ public class ServiceProduct {
     public List<Product> findProductByCategory(String category) {
         return repositoryProduct.findProductByCategory(category);
     }
+    public List<Product> filterProductByCost(int min, int max, String category) {
+        return repositoryProduct.filterProductByCost(min, max, category);
+    }
 }

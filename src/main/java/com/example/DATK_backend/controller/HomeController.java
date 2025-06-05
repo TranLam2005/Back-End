@@ -24,21 +24,21 @@ public class HomeController {
     private final JwtUtil jwtUtil;
     private final Otp otp;
     private final EmailService emailService;
-    private final ServiceOrder serviceOrder;
     private final ServiceCart serviceCart;
     private final ServiceListOrder serviceListOrder;
+    private final ServiceDiaChi serviceDiaChi;
 
 
-    public HomeController(ServiceProduct serviceProduct, ServiceListOrder serviceListOrder,ServiceCart serviceCart,ServiceOrder serviceOrder,EmailService emailService, Otp otp, ServiceUser serviceUser, JwtUtil jwtUtil, ConfigSecurity configSecurity) {
+    public HomeController(ServiceProduct serviceProduct, ServiceDiaChi serviceDiaChi, ServiceListOrder serviceListOrder,ServiceCart serviceCart, EmailService emailService, Otp otp, ServiceUser serviceUser, JwtUtil jwtUtil, ConfigSecurity configSecurity) {
         this.serviceProduct = serviceProduct;
         this.serviceUser = serviceUser;
         this.configSecurity = configSecurity;
         this.jwtUtil = jwtUtil;
         this.otp = otp;
         this.emailService = emailService;
-        this.serviceOrder = serviceOrder;
         this.serviceCart = serviceCart;
         this.serviceListOrder = serviceListOrder;
+        this.serviceDiaChi = serviceDiaChi;
     }
     @PostMapping("/signUp")
     public ResponseEntity<?> signUp(@RequestBody User user) {
@@ -68,6 +68,10 @@ public class HomeController {
     @GetMapping("/find-product")
     public ResponseEntity<?> findByNameProduct(@RequestParam(value = "nameProduct") String nameProduct) {
         return ResponseEntity.ok(serviceProduct.findByNameProduct(nameProduct));
+    }
+    @GetMapping("/{category}/filter")
+    public ResponseEntity<?> filterProductsByCost(@PathVariable(value = "category") String category, @RequestParam(value = "min") int min, @RequestParam(value = "max") int max) {
+        return ResponseEntity.ok(serviceProduct.filterProductByCost(min, max, category));
     }
     @PostMapping("/logIn")
     public ResponseEntity<?> logIn (@RequestBody User user) {
@@ -101,26 +105,9 @@ public class HomeController {
     public ResponseEntity<?> detailProduct (@RequestParam(value = "nameProduct", required = false) String nameProduct, @RequestParam(value = "id") int id) {
         return ResponseEntity.ok(serviceProduct.findProductByNameProduct(nameProduct, id));
     }
-    @PostMapping("/order")
-    public ResponseEntity<?> Order (@RequestBody List<Order> orders) {
-        for (Order orderResult : orders) {
-            serviceOrder.createOrder(orderResult);
-        }
-        return ResponseEntity.ok("Đặt hàng thành công");
-    }
-    @PreAuthorize("hasRole('SELLER')")
-    @GetMapping("/order")
-    public ResponseEntity<?> Order () {
-        return ResponseEntity.ok(serviceOrder.getAllOrders());
-    }
     @GetMapping("/{category}")
     public ResponseEntity<?> CategoryProducts (@PathVariable(value = "category") String category) {
         return ResponseEntity.ok(serviceProduct.findProductByCategory(category));
-    }
-    @DeleteMapping("/final-order")
-    public ResponseEntity<?> finalOrder () {
-        serviceOrder.deleteOrder();
-        return ResponseEntity.ok("Final Order");
     }
     @GetMapping("/cart")
     public ResponseEntity<?> Cart() {
@@ -147,7 +134,9 @@ public class HomeController {
             User user = serviceUser.findUserByUserName(userDetails.getUsername());
             if (user != null) {
                 for (ListOrder listOrder : listOrders) {
-                    serviceListOrder.addListOrder(user.getId(), listOrder.getProductId(), listOrder.getQuantity());
+                    System.out.println(listOrder.getAddress());
+                    System.out.println(listOrder.getSdt());
+                    serviceListOrder.addListOrder(user.getId(), listOrder.getProductId(), listOrder.getQuantity(), listOrder.getAddress(), listOrder.getSdt());
                 }
                 return ResponseEntity.ok("mua hàng thành công");
             }
@@ -165,7 +154,7 @@ public class HomeController {
         serviceListOrder.deleteAll();
         return ResponseEntity.ok("hoàn tất");
     }
-
+    @PreAuthorize("hasRole('SELLER')")
     @DeleteMapping("/delete-order")
     public ResponseEntity<?> DeleteOrder(@RequestParam(value = "productId") int productId) {
         serviceListOrder.deleteListOrdersByMaUser(productId);
@@ -196,6 +185,37 @@ public class HomeController {
             serviceCart.deleteCartByMaSanPham(cart.getProductId());
         }
         return ResponseEntity.ok("xóa thành cng");
+    }
+    @GetMapping("/address")
+    public ResponseEntity<?> getAddress() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User user = serviceUser.findUserByUserName(userDetails.getUsername());
+            if (user != null) {
+                System.out.println(user.getId());
+                return ResponseEntity.ok(serviceDiaChi.findDiaChiByUserId(user.getId()));
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+    @PostMapping("/address")
+    public ResponseEntity<?> addAddress(@RequestBody DiaChi diaChi) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication != null && authentication.isAuthenticated()) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            User user = serviceUser.findUserByUserName(userDetails.getUsername());
+            serviceDiaChi.addDiaChi(user.getId(), diaChi.getDiaChi(), diaChi.getSdt());
+            return ResponseEntity.ok("thêm thành công");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
 }

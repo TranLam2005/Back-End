@@ -12,8 +12,8 @@ import java.util.List;
 public interface RepositoryListOrder extends JpaRepository<ListOrder, Integer> {
     @Modifying
     @Transactional
-    @Query(value = "insert into ListOrders (maUser, maSanPham, quantity) values (:maUser, :maSanPham, :quantity)", nativeQuery = true)
-    void addListOrders (@Param("maUser") Integer maUser, @Param("maSanPham") Integer maSanPham, @Param("quantity") Integer quantity);
+    @Query(value = "insert into ListOrders (maUser, maSanPham, quantity, address, sdt) values (:maUser, :maSanPham, :quantity, :address, :sdt)", nativeQuery = true)
+    void addListOrders (@Param("maUser") Integer maUser, @Param("maSanPham") Integer maSanPham, @Param("quantity") Integer quantity, @Param("address") String address,@Param("sdt") String sdt);
 
     @Query("select l from ListOrder l order by l.maUser.userName")
     List<ListOrder> getListOrders();

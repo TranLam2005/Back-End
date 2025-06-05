@@ -12,8 +12,10 @@ public class ServiceListOrder {
     public ServiceListOrder(RepositoryListOrder repositoryListOrder) {
         this.repositoryListOrder = repositoryListOrder;
     }
-    public void addListOrder (int maUser, int maSanPham, int quantity) {
-        repositoryListOrder.addListOrders(maUser, maSanPham, quantity);
+    public void addListOrder (int maUser, int maSanPham, int quantity, String address, String sdt) {
+        System.out.println("Serivce" + sdt);
+        System.out.println("Service address: " + address);
+        repositoryListOrder.addListOrders(maUser, maSanPham, quantity, address,(String) sdt);
     }
 
     public List<ListOrder> getListOrders() {
